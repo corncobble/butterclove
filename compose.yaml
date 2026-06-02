@@ -1,0 +1,10 @@
+services:
+  butterclove:
+    build: ./
+    pull_policy: build
+    image: corncobble/butterclove
+    container_name: butterclove
+    ports:
+      - '7590:7590'
+    volumes:
+      - /path/to/config:/config
