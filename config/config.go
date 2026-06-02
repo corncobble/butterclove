@@ -53,7 +53,7 @@ func NewConfig() Config {
 			Host: "",
 			Port: 7590,
 		},
-		Dir: filepath.Dir(ep),
+		Dir: filepath.Join(filepath.Dir(ep), "config"),
 	}
 }
 

@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"io/fs"
+	"log"
 	"log/slog"
 	"os"
 	"os/signal"
@@ -40,6 +42,12 @@ func main() {
 
 	// Initialize configuration.
 	config := config.NewConfig()
+
+	// Ensure config dir exists.
+	if err := os.MkdirAll(config.Dir, fs.FileMode(0644)); err != nil {
+		log.Fatalf("error creating directory: %s", err.Error())
+	}
+
 	if err := config.Read(); err != nil {
 		slog.WarnContext(ctx, "Using default config.", "err", err)
 
