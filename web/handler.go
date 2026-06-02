@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"net/http"
 
+	"github.com/corncobble/butterclove/buzzr"
 	"github.com/corncobble/butterclove/config"
 	"github.com/corncobble/butterclove/nftv"
 	"github.com/sherif-fanous/xmltv"
@@ -26,11 +27,15 @@ func epgHandler(channels []config.Channel) http.Handler {
 		// Parse channels into xmltv.
 		var tv xmltv.TV
 		for _, c := range channels {
-			if c.Type != config.ChannelTypeNFTV {
-				continue
-			}
-			if err := nftv.ParseChannel(r.Context(), &tv, c); err != nil {
-				slog.ErrorContext(r.Context(), "Cannot parse channel", "channel", c, "err", err)
+			switch c.Type {
+			case config.ChannelTypeBuzzr:
+				if err := buzzr.ParseChannel(r.Context(), &tv); err != nil {
+					slog.ErrorContext(r.Context(), "Cannot parse channel", "channel", c, "err", err)
+				}
+			case config.ChannelTypeNFTV:
+				if err := nftv.ParseChannel(r.Context(), &tv, c); err != nil {
+					slog.ErrorContext(r.Context(), "Cannot parse channel", "channel", c, "err", err)
+				}
 			}
 		}
 
