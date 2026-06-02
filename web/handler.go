@@ -53,10 +53,8 @@ func epgHandler(channels []config.Channel) http.Handler {
 	return http.HandlerFunc(fn)
 }
 
-// Content-Type: application/xml
 // Content-Length: 2438834
 // Connection: keep-alive
-// Content-Disposition: attachment; filename="Dispatcharr.xml"
 // Cache-Control: no-cache
 // Vary: origin
 // X-Frame-Options: DENY
