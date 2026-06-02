@@ -4,14 +4,11 @@ OUT = butterclove
 .DEFAULT_GOAL := help
 
 ##@ Building
-.PHONY: all build init-dist
+.PHONY: all build
 all: tidy build
 
-build: init-dist ## Build for production
-	go build -ldflags='-s' -o dist/$(OUT)
-
-init-dist:
-	@mkdir -p dist
+build: ## Build for production
+	CGO_ENABLED=0 go build -ldflags='-s' -o $(OUT)
 
 ##@ Development
 .PHONY: dev-build
@@ -22,9 +19,7 @@ dev-build: ## Build for development
 ##@ Cleanup
 .PHONY: clean
 clean: ## Remove all build and download artifacts
-	@echo "Clearing the dist directory..."
-	@rm -rf dist/*
-	@echo "Clearing development build..."
+	@echo "Clearing build..."
 	@rm -rf $(OUT)
 
 
