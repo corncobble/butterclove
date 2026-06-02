@@ -22,8 +22,10 @@ var (
 	attrProgramDescription = html.Attribute{Key: "class", Val: "program-description"}
 )
 
-func ParseChannel(ctx context.Context, tv *xmltv.TV, c config.Channel) error {
-	resp, err := http.Get(c.URL)
+func ParseChannel(ctx context.Context, tv *xmltv.TV, channel config.Channel) error {
+	c := getChannelByID(channel.ID)
+
+	resp, err := http.Get(c.url())
 	if err != nil {
 		return err
 	}
@@ -31,15 +33,15 @@ func ParseChannel(ctx context.Context, tv *xmltv.TV, c config.Channel) error {
 
 	// add channel
 	tv.Channels = append(tv.Channels, xmltv.Channel{
-		ID: c.ID,
+		ID: c.id(),
 		DisplayNames: []xmltv.DisplayName{
-			{Text: c.Name, Lang: lang},
+			{Text: c.name(), Lang: lang},
 		},
 		Icons: []xmltv.Icon{
-			{Source: c.Icon},
+			{Source: c.icon()},
 		},
 		URLs: []xmltv.URL{
-			{Text: c.URL},
+			{Text: c.url()},
 		},
 	})
 
@@ -80,7 +82,7 @@ func ParseChannel(ctx context.Context, tv *xmltv.TV, c config.Channel) error {
 
 					// start of a new program
 					case "class":
-						programme = xmltv.Programme{Channel: c.ID}
+						programme = xmltv.Programme{Channel: c.id()}
 
 					// Val is in unix time (msec)
 					case "data-start-time":

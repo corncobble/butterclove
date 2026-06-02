@@ -26,13 +26,10 @@ const (
 	ChannelTypeBuzzr ChannelType = "buzzr"
 )
 
-// Channel provides options for channel information.
+// Channel specifies which channel(s) to include in xmltv output.
 type Channel struct {
 	Type ChannelType `json:"type"`
 	ID   string      `json:"id"`
-	Name string      `json:"name"`
-	URL  string      `json:"url"`
-	Icon string      `json:"icon"`
 }
 
 // Config represents the configuration for the application.
