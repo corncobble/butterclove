@@ -24,6 +24,8 @@ func SetupHandler(channels []config.Channel) {
 
 func epgHandler(channels []config.Channel) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
+		slog.InfoContext(r.Context(), "Generating XMLTV...")
+
 		// Parse channels into xmltv.
 		var tv xmltv.TV
 		for _, c := range channels {
@@ -58,7 +60,7 @@ func epgHandler(channels []config.Channel) http.Handler {
 	return http.HandlerFunc(fn)
 }
 
-// Content-Length: 2438834
+// TODO: Add these in middleware?
 // Connection: keep-alive
 // Cache-Control: no-cache
 // Vary: origin
