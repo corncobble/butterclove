@@ -50,6 +50,24 @@ func NewConfig() Config {
 			Host: "",
 			Port: 7590,
 		},
+		Channels: []Channel{
+			{
+				ID:   "BUZZR.us",
+				Type: "buzzr",
+			},
+			{
+				ID:   "NFTV-1.us",
+				Type: "nftv",
+			},
+			{
+				ID:   "NFTV-2.us",
+				Type: "nftv",
+			},
+			{
+				ID:   "NFTV-3.us",
+				Type: "nftv",
+			},
+		},
 		Dir: filepath.Join(filepath.Dir(ep), "config"),
 	}
 }
