@@ -2,9 +2,11 @@ package web
 
 import (
 	"encoding/xml"
+	"fmt"
 	"log/slog"
 	"net/http"
 
+	"github.com/corncobble/butterclove/artiflix"
 	"github.com/corncobble/butterclove/buzzr"
 	"github.com/corncobble/butterclove/config"
 	"github.com/corncobble/butterclove/nftv"
@@ -16,15 +18,19 @@ var handler http.Handler
 func SetupHandler(channels []config.Channel) {
 	mux := http.NewServeMux()
 
-	xh := epgHandler(channels)
-	mux.Handle("/output/epg", xh)
-
+	groups := map[string][]config.Channel{}
+	for _, c := range channels {
+		groups[c.Group] = append(groups[c.Group], c)
+	}
+	for k, v := range groups {
+		mux.Handle(fmt.Sprintf("/%s/output/epg", k), epgHandler(v))
+	}
 	handler = mux
 }
 
 func epgHandler(channels []config.Channel) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
-		slog.InfoContext(r.Context(), "Generating XMLTV...")
+		slog.InfoContext(r.Context(), "XMLTV requested", "uri", r.RequestURI)
 
 		// Parse channels into xmltv.
 		var tv xmltv.TV
@@ -36,6 +42,10 @@ func epgHandler(channels []config.Channel) http.Handler {
 				}
 			case config.ChannelTypeNFTV:
 				if err := nftv.ParseChannel(r.Context(), &tv, c); err != nil {
+					slog.ErrorContext(r.Context(), "Cannot parse channel", "channel", c, "err", err)
+				}
+			case config.ChannelTypeArtiflix:
+				if err := artiflix.ParseChannel(r.Context(), &tv); err != nil {
 					slog.ErrorContext(r.Context(), "Cannot parse channel", "channel", c, "err", err)
 				}
 			}

@@ -24,12 +24,15 @@ const (
 	ChannelTypeNFTV ChannelType = "nftv"
 	// ChannelTypeBuzzr is for parsing Buzzr channel information.
 	ChannelTypeBuzzr ChannelType = "buzzr"
+	// ChannelTypeArtiflix is for parsing Artiflix channel information.
+	ChannelTypeArtiflix ChannelType = "artiflix"
 )
 
 // Channel specifies which channel(s) to include in xmltv output.
 type Channel struct {
-	Type ChannelType `json:"type"`
-	ID   string      `json:"id"`
+	Type  ChannelType `json:"type"`
+	ID    string      `json:"id"`
+	Group string      `json:"group"`
 }
 
 // Config represents the configuration for the application.
@@ -52,20 +55,29 @@ func NewConfig() Config {
 		},
 		Channels: []Channel{
 			{
-				ID:   "BUZZR.us",
-				Type: "buzzr",
+				ID:    "BUZZR.us",
+				Type:  "buzzr",
+				Group: "1",
 			},
 			{
-				ID:   "NFTV-1.us",
-				Type: "nftv",
+				ID:    "NFTV-1.us",
+				Type:  "nftv",
+				Group: "2",
 			},
 			{
-				ID:   "NFTV-2.us",
-				Type: "nftv",
+				ID:    "NFTV-2.us",
+				Type:  "nftv",
+				Group: "2",
 			},
 			{
-				ID:   "NFTV-3.us",
-				Type: "nftv",
+				ID:    "NFTV-3.us",
+				Type:  "nftv",
+				Group: "2",
+			},
+			{
+				ID:    "Artiflix.us",
+				Type:  "artiflix",
+				Group: "3",
 			},
 		},
 		Dir: filepath.Join(filepath.Dir(ep), "config"),
