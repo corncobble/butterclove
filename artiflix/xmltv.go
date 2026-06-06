@@ -10,12 +10,14 @@ import (
 const (
 	channelID  = "Artiflix.us"
 	channelURL = "https://artiflix.com/live"
+	timeLayout = "2006-01-02T15:04:05.000Z"
 )
 
 var lang = new("en")
 
 func ParseChannel(ctx context.Context, tv *xmltv.TV) error {
-	apiChannel, err := getAPIChannel()
+	client := newAPIClient()
+	channel, err := client.getChannel(ctx)
 	if err != nil {
 		return err
 	}
@@ -24,17 +26,17 @@ func ParseChannel(ctx context.Context, tv *xmltv.TV) error {
 	tv.Channels = append(tv.Channels, xmltv.Channel{
 		ID: channelID,
 		DisplayNames: []xmltv.DisplayName{
-			{Text: apiChannel.ChannelName, Lang: lang},
+			{Text: channel.ChannelName, Lang: lang},
 		},
 		Icons: []xmltv.Icon{
-			{Source: apiChannel.Logo},
+			{Source: channel.Logo},
 		},
 		URLs: []xmltv.URL{
 			{Text: channelURL},
 		},
 	})
 
-	for _, p := range []APIProgram{apiChannel.NowPlaying, apiChannel.UpNext} {
+	for _, p := range []Program{channel.NowPlaying, channel.UpNext} {
 		start, err := time.Parse(timeLayout, p.StartTime)
 		if err != nil {
 			return err
