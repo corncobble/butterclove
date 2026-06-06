@@ -13,10 +13,12 @@ const (
 	timeLayout = "2006-01-02T15:04:05.000Z"
 )
 
-var lang = new("en")
+var (
+	client = newAPIClient()
+	lang   = new("en")
+)
 
 func ParseChannel(ctx context.Context, tv *xmltv.TV) error {
-	client := newAPIClient()
 	channel, err := client.getChannel(ctx)
 	if err != nil {
 		return err
