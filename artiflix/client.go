@@ -11,16 +11,6 @@ import (
 	"time"
 )
 
-type AuthResponse struct {
-	Token string `json:"token"`
-}
-
-type ChannelResponse struct {
-	Data    []Channel `json:"data"`
-	Success bool      `json:"success"`
-	Message string    `json:"message"`
-}
-
 type Channel struct {
 	ChannelName string  `json:"channel_name"`
 	LiveURL     string  `json:"live_url"`
@@ -35,6 +25,16 @@ type Program struct {
 	StartTime   string `json:"start_time"`
 	EndTime     string `json:"end_time"`
 	Thumbnail   string `json:"thumbnail"`
+}
+
+type authResponse struct {
+	Token string `json:"token"`
+}
+
+type channelResponse struct {
+	Data    []Channel `json:"data"`
+	Success bool      `json:"success"`
+	Message string    `json:"message"`
 }
 
 type apiClient struct {
@@ -83,7 +83,7 @@ func (c *apiClient) getChannel(ctx context.Context) (Channel, error) {
 	}
 	defer w.Body.Close()
 
-	var data ChannelResponse
+	var data channelResponse
 	dec := json.NewDecoder(w.Body)
 	if err = dec.Decode(&data); err != nil {
 		return channel, err
@@ -117,7 +117,7 @@ func (c *apiClient) authenticate(ctx context.Context) error {
 		return fmt.Errorf("authentication failed, status %d", w.StatusCode)
 	}
 
-	var data AuthResponse
+	var data authResponse
 	dec := json.NewDecoder(w.Body)
 	if err = dec.Decode(&data); err != nil {
 		return err
