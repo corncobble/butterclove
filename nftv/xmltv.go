@@ -130,19 +130,18 @@ func ParseChannel(ctx context.Context, tv *xmltv.TV, channel config.Channel) err
 			// program description is contained in subsequent token
 			case attrProgramDescription:
 				if programme.Channel == "" {
-					slog.InfoContext(ctx, "Program title attribute found with no associated program, ignoring.")
+					slog.InfoContext(ctx, "Program description attribute found with no associated program, ignoring.")
 					break
 				}
 
 				next()
 				if tt != html.TextToken {
 					slog.WarnContext(ctx, "No program description found", "expected", html.TextToken.String(), "got", tt.String())
-					break
+				} else {
+					programme.Descriptions = []xmltv.Description{
+						{Text: string(z.Text()), Lang: lang},
+					}
 				}
-				programme.Descriptions = []xmltv.Description{
-					{Text: string(z.Text()), Lang: lang},
-				}
-
 				// append complete program entry
 				tv.Programmes = append(tv.Programmes, programme)
 				// set current program to zero value
