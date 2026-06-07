@@ -30,6 +30,12 @@ func SetupHandler(channels []config.Channel) {
 
 func epgHandler(channels []config.Channel) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet {
+			w.WriteHeader(http.StatusNotFound)
+			w.Write([]byte("Only GET request allowed"))
+			return
+		}
+
 		slog.InfoContext(r.Context(), "XMLTV requested", "uri", r.RequestURI)
 
 		// Parse channels into xmltv.
